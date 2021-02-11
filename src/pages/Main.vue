@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <h2 class="logo">Characters of Rick and Morty</h2>
-    <ul class="list-of-characters" ref="msg_wrapper">
+    <ul class="list-of-characters" ref="list_character">
       <router-link
         v-for="item in getResults"
         :key="item.id"
@@ -32,29 +32,31 @@ export default {
     onScroll(event) {
       const fullScroll = event.target.scrollHeight - event.target.clientHeight;
 
-      if (fullScroll == event.target.scrollTop) {
-        fetch(this.getInfo.next)
-          .then((response) => response.json())
-          .then((data) => {
-            this.setInfo(data.info);
-            this.setResults(data.results);
-          });
-      }
+      if (fullScroll == event.target.scrollTop)
+        this.requestData(this.getInfo.next);
+    },
+    getDataForList() {
+      if (!this.getResults.length) this.requestData(SERVER_URL);
+    },
+    requestData(url) {
+      fetch(url)
+        .then((response) => response.json())
+        .then((data) => {
+          this.$refs.list_character.removeEventListener(
+            "scroll",
+            this.onScroll
+          );
+          this.setInfo(data.info);
+          this.setResults(data.results);
+          this.$refs.list_character.addEventListener("scroll", this.onScroll);
+        });
     },
   },
   created() {
-    fetch(SERVER_URL)
-      .then((response) => response.json())
-      .then((data) => {
-        if (!this.getResults.length) {
-          this.setInfo(data.info);
-          this.setResults(data.results);
-        }
-        this.$refs.msg_wrapper.addEventListener("scroll", this.onScroll);
-      });
+    this.getDataForList();
   },
   beforeDestroy() {
-    this.$refs.msg_wrapper.removeEventListener("scroll", this.onScroll);
+    this.$refs.list_character.removeEventListener("scroll", this.onScroll);
   },
 };
 </script>
