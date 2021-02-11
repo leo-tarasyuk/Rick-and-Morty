@@ -37,8 +37,7 @@ export default {
         this.requestData(this.getInfo.next);
     },
     getDataForList() {
-      if (!this.getResults.length) 
-        this.requestData(SERVER_URL);
+      this.requestData(SERVER_URL);
     },
     requestData(url) {
       fetch(url)

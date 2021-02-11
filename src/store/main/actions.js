@@ -17,12 +17,16 @@ function setInfo({ commit }, payload) {
  */
 
 function setResults({ commit, state }, payload) {
-    const res = [
-        ...state.results,
-        ...payload,
-    ];
+    const res = !payload.length
+        ? [...payload]
+        : [
+            ...state.results,
+            ...payload,
+        ]
+
     commit(types.GET_RESULTS, res);
 }
+
 
 export default {
     setInfo,

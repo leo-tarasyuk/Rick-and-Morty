@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   data() {
@@ -32,7 +32,10 @@ export default {
     ...mapGetters("character", ["getCharacter"]),
   },
   methods: {
+    ...mapActions("main", ["setResults"]),
+
     goBackToCharacters() {
+      this.setResults([]);
       this.$router.push("/");
     },
   },
@@ -77,7 +80,7 @@ export default {
       padding: 15px 0px
       &:last-child
         border-bottom: 1px solid black
-        
+
   .return-to-main
     display: flex
     justify-content: center
