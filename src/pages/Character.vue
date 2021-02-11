@@ -53,11 +53,13 @@ export default {
     padding: 20px 0px
     text-align: center
     background-color: rgba(0,0,100, 0.1)
+
   .character-image
     height: auto
     display: flex
     justify-content: center
     align-items: center
+
   .character-data
     width: 100%
     text-align: center
@@ -75,6 +77,7 @@ export default {
       padding: 15px 0px
       &:last-child
         border-bottom: 1px solid black
+        
   .return-to-main
     display: flex
     justify-content: center

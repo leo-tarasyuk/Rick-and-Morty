@@ -16,11 +16,16 @@ function setInfo({ commit }, payload) {
  * @param  {Array} payload  Visiable Description
  */
 
-function setResults({ commit }, payload) {
-    commit(types.GET_RESULTS, payload);
+function setResults({ commit, state }, payload) {
+    const res = [
+        ...state.results,
+        ...payload,
+    ];
+    commit(types.GET_RESULTS, res);
 }
 
 export default {
     setInfo,
-    setResults
+    setResults,
 };
+

@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <h2 class="logo">Characters of Rick and Morty</h2>
-    <ul class="list-of-characters">
+    <ul class="list-of-characters" ref="msg_wrapper">
       <router-link
         v-for="item in getResults"
         :key="item.id"
@@ -11,7 +11,7 @@
         v-slot="{ navigate }"
       >
         <li @click="navigate" role="link">
-          <p @click="sendDataCharacter(item)">{{ item.name }}</p>
+          <p @click="setCharacter(item)">{{ item.name }}</p>
         </li>
       </router-link>
     </ul>
@@ -24,28 +24,20 @@ import { SERVER_URL } from "../api";
 
 export default {
   computed: {
-    ...mapGetters("main", ["getInfo"]),
-    ...mapGetters("main", ["getResults"]),
+    ...mapGetters("main", ["getInfo", "getResults"]),
   },
   methods: {
-    ...mapActions("main", ["setInfo"]),
-    ...mapActions("main", ["setResults"]),
+    ...mapActions("main", ["setInfo", "setResults"]),
     ...mapActions("character", ["setCharacter"]),
-    sendDataCharacter(data) {
-      this.setCharacter(data);
-    },
-    handleScroll(event) {
-      const fullHeight = document.querySelector(".main").clientHeight;
-      const currentHeight = event.path[1].innerHeight;
-      const scrollHeigth = event.path[1].scrollY;
-      if (fullHeight == currentHeight + scrollHeigth && this.getInfo.next) {
+    onScroll(event) {
+      const fullScroll = event.target.scrollHeight - event.target.clientHeight;
+
+      if (fullScroll == event.target.scrollTop) {
         fetch(this.getInfo.next)
           .then((response) => response.json())
           .then((data) => {
             this.setInfo(data.info);
-            data.results.map((item) => {
-              this.getResults.push(item);
-            });
+            this.setResults(data.results);
           });
       }
     },
@@ -54,43 +46,50 @@ export default {
     fetch(SERVER_URL)
       .then((response) => response.json())
       .then((data) => {
-        this.setInfo(data.info);
-        this.setResults(data.results);
+        if (!this.getResults.length) {
+          this.setInfo(data.info);
+          this.setResults(data.results);
+        }
+        this.$refs.msg_wrapper.addEventListener("scroll", this.onScroll);
       });
-    document.addEventListener("scroll", this.handleScroll);
   },
   beforeDestroy() {
-    document.removeEventListener("scroll", this.handleScroll);
+    this.$refs.msg_wrapper.removeEventListener("scroll", this.onScroll);
   },
 };
 </script>
 
 <style lang="sass">
-.main
+.logo
   width: 100%
-  position: relative
-  .logo
+  height: 70px
+  display: flex
+  justify-content: center
+  align-items: center
+  background-color: rgba(0,0,100, 0.1)
+
+.list-of-characters
+  width: 100%
+  height: calc(100vh - 70px)
+  overflow-y: scroll
+  display: flex
+  flex-direction: column
+
+  .character
     width: 100%
-    height: auto
-    padding: 20px 0px
-    text-align: center
-    background-color: rgba(0,0,100, 0.1)
-  .list-of-characters
-    width: 100%
+    list-style: none
+    background-color: rgba(0,100,100, 0.1)
+    border: 1px solid black
+    box-sizing: border-box
+    border-bottom: none
     display: flex
-    flex-direction: column
     justify-content: center
-    aligb-items: center
-    text-align: center
-    .character
+    align-items: center
+
+    p
       width: 100%
-      list-style: none
-      background-color: rgba(0,100,100, 0.1)
-      border: 1px solid black
-      box-sizing: border-box
-      border-bottom: none
-      p
-        padding: 20px 0px
-        &:hover
-          background-color: rgba(0, 100, 100, 0.1)
+      padding: 20px 0px
+      text-align: center
+      &:hover
+        background-color: rgba(0, 100, 100, 0.1)
 </style>
