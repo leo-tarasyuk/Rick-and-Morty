@@ -29,6 +29,7 @@ export default {
   methods: {
     ...mapActions("main", ["setInfo", "setResults"]),
     ...mapActions("character", ["setCharacter"]),
+
     onScroll(event) {
       const fullScroll = event.target.scrollHeight - event.target.clientHeight;
 
@@ -36,16 +37,14 @@ export default {
         this.requestData(this.getInfo.next);
     },
     getDataForList() {
-      if (!this.getResults.length) this.requestData(SERVER_URL);
+      if (!this.getResults.length) 
+        this.requestData(SERVER_URL);
     },
     requestData(url) {
       fetch(url)
         .then((response) => response.json())
         .then((data) => {
-          this.$refs.list_character.removeEventListener(
-            "scroll",
-            this.onScroll
-          );
+          this.$refs.list_character.removeEventListener("scroll", this.onScroll);
           this.setInfo(data.info);
           this.setResults(data.results);
           this.$refs.list_character.addEventListener("scroll", this.onScroll);
