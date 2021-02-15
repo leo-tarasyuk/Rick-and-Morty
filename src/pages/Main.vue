@@ -27,31 +27,21 @@ export default {
     ...mapGetters("main", ["getInfo", "getResults"]),
   },
   methods: {
-    ...mapActions("main", ["setInfo", "setResults"]),
+    ...mapActions("main", ["getData"]),
     ...mapActions("character", ["setCharacter"]),
 
     onScroll(event) {
       const fullScroll = event.target.scrollHeight - event.target.clientHeight;
 
-      if (fullScroll == event.target.scrollTop)
-        this.requestData(this.getInfo.next);
-    },
-    getDataForList() {
-      this.requestData(SERVER_URL);
-    },
-    requestData(url) {
-      fetch(url)
-        .then((response) => response.json())
-        .then((data) => {
-          this.$refs.list_character.removeEventListener("scroll", this.onScroll);
-          this.setInfo(data.info);
-          this.setResults(data.results);
-          this.$refs.list_character.addEventListener("scroll", this.onScroll);
-        });
+      if (fullScroll == this.$refs.list_character.scrollTop)
+        this.getData(this.getInfo.next);
     },
   },
   created() {
-    this.getDataForList();
+    this.getData(SERVER_URL);
+  },
+  mounted() {
+    this.$refs.list_character.addEventListener("scroll", this.onScroll);
   },
   beforeDestroy() {
     this.$refs.list_character.removeEventListener("scroll", this.onScroll);

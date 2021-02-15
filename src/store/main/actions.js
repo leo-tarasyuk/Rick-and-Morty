@@ -1,35 +1,23 @@
 import * as types from "./mutation-types";
 
-/**
- * Selects project and saves in working context
- * @param  {Object} context  Menu store context
- * @param  {Object} payload  Visiable Description
- */
-
-function setInfo({ commit }, payload) {
-    commit(types.GET_INFO, payload);
+function setResults({ commit }, payload) {
+    commit(types.SET_RESULTS, payload);
 }
 
-/**
- * Selects project and saves in working context
- * @param  {Array} context  Menu store context
- * @param  {Array} payload  Visiable Description
- */
-
-function setResults({ commit, state }, payload) {
-    const res = !payload.length
-        ? [...payload]
+async function getData({ commit, state }, payload) {
+    const responce = await fetch(payload);
+    const { info, results } = await responce.json();
+    const res = !results.length
+        ? [...results]
         : [
             ...state.results,
-            ...payload,
+            ...results,
         ]
 
-    commit(types.GET_RESULTS, res);
+    commit(types.GET_DATA, { info, results: res })
 }
 
-
 export default {
-    setInfo,
     setResults,
+    getData
 };
-

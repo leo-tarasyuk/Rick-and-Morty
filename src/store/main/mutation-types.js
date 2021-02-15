@@ -1,3 +1,3 @@
-export const GET_INFO = 'GET_INFO'
-export const GET_RESULTS = 'GET_RESULTS'
+export const SET_RESULTS = 'SET_RESULTS'
+export const GET_DATA = 'GET_DATA '
 

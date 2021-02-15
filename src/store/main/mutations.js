@@ -1,10 +1,11 @@
 import * as types from "./mutation-types";
 
 export default {
-  [types.GET_INFO](state, payload) {
-    state.info = payload;
-  },
-  [types.GET_RESULTS](state, payload) {
+  [types.SET_RESULTS](state, payload) {
     state.results = payload;
+  },
+  [types.GET_DATA](state, { info, results }) {
+    state.info = info;
+    state.results = results;
   }
 }
